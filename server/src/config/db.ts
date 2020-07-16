@@ -12,7 +12,7 @@ export default async function dbConfig() {
     console.log("db is connected");
   } catch (error) {
     connection.on("error", (err) => {
-      console.error(err);
+      console.error(error);
     });
   }
 }
