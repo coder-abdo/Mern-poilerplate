@@ -1,4 +1,4 @@
-import { RequestHandler } from "express";
+import { RequestHandler, Request, Response, NextFunction } from "express";
 import { genSalt, hash, compare } from "bcryptjs";
 import { sign } from "jsonwebtoken";
 import { User } from "../models/User";
@@ -57,4 +57,32 @@ const login: RequestHandler = async (req, res, next) => {
     next(error);
   }
 };
-export { register, login };
+// get auth
+const getAuth: RequestHandler = async (
+  req: Request | any,
+  res: Response,
+  next: NextFunction
+) => {
+  let { user } = req;
+  try {
+    res.json({ isAuth: true, user, sucess: true });
+  } catch (error) {
+    next(error);
+  }
+};
+const logout: RequestHandler = async (req: any, res, next) => {
+  try {
+    const { user } = req;
+    let existUser = await User.findOne({ email: user.email });
+    if (existUser) {
+      req.token = null;
+      return res.json({
+        sucess: true,
+        isAuth: false,
+      });
+    }
+  } catch (error) {
+    next(error);
+  }
+};
+export { register, login, getAuth, logout };
