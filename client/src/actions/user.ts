@@ -5,11 +5,22 @@ const {
   LOGOUT,
   SUCCESS_LOGIN,
   SUCCESS_REGISTER,
+  AUTH,
 } = ActionNames;
 
 const loginSuccess = (user: IUser): IAction<IUser> => ({
   type: SUCCESS_LOGIN,
   payload: user,
+});
+const auth = ({
+  user,
+  isAuth,
+}: {
+  user: IUser;
+  isAuth: boolean;
+}): IAction<any> => ({
+  type: AUTH,
+  payload: { user, isAuth },
 });
 const failedLogin = () => ({
   type: FAILED_LOGIN,
@@ -23,4 +34,11 @@ const failedRegister = () => ({
 const logout = () => ({
   type: LOGOUT,
 });
-export { loginSuccess, failedLogin, successRegister, failedRegister, logout };
+export {
+  loginSuccess,
+  failedLogin,
+  successRegister,
+  failedRegister,
+  logout,
+  auth,
+};

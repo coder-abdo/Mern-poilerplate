@@ -1,5 +1,5 @@
 import React, { createContext, useReducer } from "react";
-import { ActionNames, IAction, IState } from "./customTypes";
+import { ActionNames, IAction, IState, TContext } from "./customTypes";
 const initialState = {
   user: null,
   isAuth: false,
@@ -11,6 +11,7 @@ const {
   SUCCESS_REGISTER,
   FAILED_LOGIN,
   FAILED_REGISTER,
+  AUTH,
 } = ActionNames;
 const reducer = (state = initialState, { type, payload }: IAction<any>) => {
   switch (type) {
@@ -22,14 +23,19 @@ const reducer = (state = initialState, { type, payload }: IAction<any>) => {
     case FAILED_REGISTER:
     case LOGOUT:
       return { ...state, loading: false, isAuth: false };
+    case AUTH:
+      return {
+        ...state,
+        loading: false,
+        isAuth: payload.isAuth,
+        user: payload.user,
+      };
     default:
       return state;
   }
 };
-export const Store = createContext<{
-  state: IState;
-  dispatch: React.Dispatch<IAction<any>>;
-} | null>(null);
+
+export const Store = createContext<TContext | null>(null);
 
 const Provider: React.FunctionComponent = ({ children }) => {
   const [state, dispatch] = useReducer(reducer, initialState);
