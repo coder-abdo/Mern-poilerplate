@@ -4,7 +4,7 @@ import { Link, Redirect } from "react-router-dom";
 import { Store } from "../store";
 import { TContext, TErr } from "../customTypes";
 import { Alert } from "../components/Alert";
-import { loginSuccess, failedLogin } from "../actions/user";
+import { loginSuccess, failedLogin, auth } from "../actions/user";
 export const Login = () => {
   const [user, setUser] = useState({ email: "", password: "" });
   const [err, setErr] = useState<Array<TErr>>([]);
@@ -12,35 +12,43 @@ export const Login = () => {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
     setUser({ ...user, [e.target.name]: e.target.value });
   };
-  let rand = ~~(Math.random() * 100);
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!user.email) {
-      let errors = { msg: "Required Field", id: rand };
-      setErr([...err, errors]);
-    }
     let regx = /^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$/;
-    if (!user.email.match(regx)) {
-      let errors = { msg: "Invalid Email", id: rand };
+    if (!user.email) {
+      let errors = { msg: "Required Field", id: ~~(Math.random() * 100) };
       setErr([...err, errors]);
+      if (!user.email.match(regx)) {
+        let errors = { msg: "Invalid Email", id: ~~(Math.random() * 100) };
+        setErr([...err, errors]);
+      }
     }
     if (!user.password) {
-      let errors = { msg: "Required Field", id: rand };
+      let errors = { msg: "Required Field", id: ~~(Math.random() * 100) };
       setErr([...err, errors]);
-    }
-    if (user.password.length < 6) {
-      let errors = {
-        id: rand,
-        msg: "Password should be at least 6 characters",
-      };
-      setErr([...err, errors]);
+      if (user.password.length < 6) {
+        let errors = {
+          id: ~~(Math.random() * 100),
+          msg: "Password should be at least 6 characters",
+        };
+        setErr([...err, errors]);
+      }
     }
     try {
       const { data } = await axios.post("/api/users/login", user);
-      dispatch(loginSuccess(data));
+      console.log(data);
+      dispatch(loginSuccess(data.isAuth));
+      if (data.success) {
+        const { data: authData } = await axios.get("/api/users/auth");
+        console.log(authData);
+        dispatch(auth(authData));
+      }
     } catch (error) {
       dispatch(failedLogin());
-      setErr([...err, { msg: error.response.data.error, id: rand }]);
+      setErr([
+        ...err,
+        { msg: error.response.data.error, id: ~~(Math.random() * 100) },
+      ]);
     }
   };
   if (state.isAuth) {

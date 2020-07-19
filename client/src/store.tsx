@@ -16,13 +16,13 @@ const {
 const reducer = (state = initialState, { type, payload }: IAction<any>) => {
   switch (type) {
     case SUCCESS_LOGIN:
-      return { ...state, isAuth: true, loading: false };
+      return { ...state, isAuth: payload, loading: false };
     case SUCCESS_REGISTER:
       return { ...state, loading: false };
     case FAILED_LOGIN:
     case FAILED_REGISTER:
     case LOGOUT:
-      return { ...state, loading: false, isAuth: false };
+      return { ...state, user: null, loading: false, isAuth: false };
     case AUTH:
       return {
         ...state,

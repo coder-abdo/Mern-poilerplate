@@ -16,7 +16,7 @@ export const Navbar: React.FunctionComponent<{
   );
   const userLinks = (
     <>
-      <li className="nav-item">
+      <li className="nav-item mr-3">
         <NavLink to="/dashboard">Dashboard</NavLink>
       </li>
       <button className="btn btn-primary btn-lg" onClick={handleLogout}>

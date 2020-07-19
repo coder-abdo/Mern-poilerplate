@@ -8,19 +8,13 @@ const {
   AUTH,
 } = ActionNames;
 
-const loginSuccess = (user: IUser): IAction<IUser> => ({
+const loginSuccess = (isAuth: boolean): IAction<boolean> => ({
   type: SUCCESS_LOGIN,
-  payload: user,
+  payload: isAuth,
 });
-const auth = ({
-  user,
-  isAuth,
-}: {
-  user: IUser;
-  isAuth: boolean;
-}): IAction<any> => ({
+const auth = (payload: { user: IUser; isAuth: boolean }): IAction<any> => ({
   type: AUTH,
-  payload: { user, isAuth },
+  payload,
 });
 const failedLogin = () => ({
   type: FAILED_LOGIN,

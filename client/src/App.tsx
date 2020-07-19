@@ -1,5 +1,4 @@
 import React, { useContext, useEffect } from "react";
-import axios from "axios";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import { About } from "./pages/About";
 import { Login } from "./pages/Login";
@@ -10,23 +9,25 @@ import { TContext } from "./customTypes";
 import { PrivateRoute } from "./components/PrivateRoute";
 import { Dashboard } from "./pages/Dashboard";
 import { Navbar } from "./components/Navbar";
-import { logout, auth } from "./actions/user";
-
+import { logout } from "./actions/user";
+import { auth } from "./actions/user";
+import axios from "axios";
 function App() {
-  const getAuth = async () => {
-    try {
-      const { data } = await axios.get("/api/users/auth");
-      dispatch(auth(data));
-    } catch (error) {
-      console.log(error.response);
-    }
-  };
   const { state, dispatch } = useContext(Store) as TContext;
   const handleLogout = () => {
     dispatch(logout());
   };
+  const getUserInfo = async () => {
+    try {
+      const { data } = await axios.get("/api/users/auth");
+      console.log(data);
+      dispatch(auth(data));
+    } catch (error) {
+      console.error(error.response);
+    }
+  };
   useEffect(() => {
-    getAuth();
+    getUserInfo();
     // eslint-disable-next-line
   }, []);
   return (

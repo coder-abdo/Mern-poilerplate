@@ -52,6 +52,7 @@ const login: RequestHandler = async (req, res, next) => {
     });
     res.cookie("x-auth-token", token).json({
       success: true,
+      isAuth: true,
     });
   } catch (error) {
     next(error);
@@ -76,7 +77,8 @@ const logout: RequestHandler = async (req: any, res, next) => {
     let existUser = await User.findOne({ email: user.email });
     if (existUser) {
       req.token = null;
-      return res.json({
+      req.user = null;
+      return res.clearCookie("x-auth-token").json({
         sucess: true,
         isAuth: false,
       });
